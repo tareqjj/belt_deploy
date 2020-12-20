@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        header{display: flex; justify-content: space-between;}
+        main{display: flex; justify-content: space-around;}
+    </style>
+    <title>Book Info</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome, {{request.session.logged_user_info.first_name}}!</h1>
+        <div>
+            <a href="/display_books"> Back</a>
+            <p><a href="/logout">Log Out</a></p>
+        </div>
+    </header>
+    <hr>
+    <main>
+        {% if book_info.uploaded_by.id == request.session.logged_user_info.user_id %}
+        <div>
+            <form action="/books/{{book_info.id}}/edit" method="post">
+                {% csrf_token %}
+                Title: <input type="text" name="title" value="{{book_info.title}}">
+                <p>Added by: {{book_info.uploaded_by.first_name}}</p>
+                <p>Added on: {{book_info.created_at}}</p>
+                <p>Last Updated on: {{book_info.updated_at}}</p>
+                Description:<textarea name="description">{{book_info.desc}}</textarea>
+                <br>
+                <input type="submit" value="Update">
+            </form>
+            <a href="/books/{{book_info.id}}/destroy">Delete</a>
+        </div>
+        {% else %}
+        <div>
+            <h2>Title: {{book_info.title}}</h2>
+            <p>Added by: {{book_info.uploaded_by.first_name}}</p>
+            <p>Added on: {{book_info.created_at}}</p>
+            <p>Last Updated on: {{book_info.updated_at}}</p>
+            <p>Description: {{book_info.desc}}</p>
+        </div>
+        {% endif%}
+        <div>
+            <h2>Users Who Like This Book:</h2>
+            <ul>
+                {% for user in users %}
+                <li>{{user.first_name}} {{user.last_name}}</li>
+                {% endfor %}
+            </ul>
+            {% if book_info.id in liked_books %}
+            <p><a href="/remove_fromFavorite/{{book_info.id}}">Un-Favorite</a></p>
+            {% else %}
+            <p><a href="/add_toFavorite/{{book_info.id}}">Add to Favorites</a></p>
+            {% endif %}
+        </div>
+    </main>
+</body>
+</html>

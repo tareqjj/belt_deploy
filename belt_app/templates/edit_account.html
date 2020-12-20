@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        header{display: flex; justify-content: space-between;}
+    </style>
+    <title>Edit Account</title>
+</head>
+<body>
+<header>
+    <div>
+        <h1>Welcome, {{user_info.first_name}}!</h1>
+    </div>
+    <div>
+        <a href="/display_quotes"> Back</a> |
+        <a href="/logout">Log Out</a>
+    </div>
+</header>
+<hr>
+    <main>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <form action="/edit_account/{{user_info.id}}" method="post">
+            {% csrf_token %}
+            First Name: <input type="text" name="first_name" value="{{user_info.first_name}}">
+            Last Name: <input type="text" name="last_name" value="{{user_info.last_name}}">
+            Email: <input type="email" name="email" value="{{user_info.email}}">
+            <input type="submit" value="Update">
+        </form>
+    </main>
+</body>
+</html>

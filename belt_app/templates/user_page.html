@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        header{display: flex; justify-content: space-between;}
+    </style>
+    <title>User Page</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome, {{request.session.logged_user_info.first_name}}!</h1>
+        <div>
+            <a href="/display_quotes"> Back</a>
+            <p><a href="/logout">Log Out</a></p>
+        </div>
+    </header>
+    <hr>
+    <main>
+        <h1>All Posted Quotes by {{user_info.first_name}} {{user_info.last_name}} </h1>
+        <ul>
+            {% for quote in all_quotes_uploaded %}
+            <li>{{quote.author}}: "{{quote.quote}}"</li>
+            {% endfor %}
+        </ul>
+    </main>
+</body>
+</html>

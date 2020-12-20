@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <style>
+        header{display: flex; justify-content: space-between;}
+        main{display: flex; justify-content: space-around;}
+        form input, textarea{display: block;}
+        #quotes{border: 1px solid black}
+    </style>
+    <title>Favorite quotes</title>
+</head>
+<body>
+    <header>
+        <div>
+            <h1>Welcome, {{user_info.first_name}}!</h1>
+        </div>
+        <div>
+            <a href="/display_edit/{{request.session.logged_user_info.user_id}}">Edit My Account</a> |
+            <a href="/logout">Log Out</a>
+        </div>
+    </header>
+    <hr>
+    <main>
+        <div>
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            <h2>Add a Quote!</h2>
+            <form action="/add_Quote" method="POST">
+                {% csrf_token %}
+                Author: <input type="text" name="author">
+                Quote:<textarea name="quote"></textarea>
+                <input type="submit" value="Add">
+            </form>
+        </div>
+        <div id="quotes">
+            <h2>Quotes</h2>
+            {% for quote in all_quotes %}
+            <p>{{quote.author}}: "{{quote.quote}}"</p>
+            <p>{{ quote.users_who_like.all|length }} people likes this</p>
+            <p>Posted by <a href="/quotes/{{quote.uploaded_by.id}}">{{quote.uploaded_by.first_name}} {{quote.uploaded_by.last_name}}</a></p>
+                {% if quote.id in liked_quotes %}
+            <p>You liked this quote</p>
+                {% else %}
+            <p><a href="/add_toLikes/{{quote.id}}">Like</a></p>
+                {% endif %}
+            <a href="/delete/{{quote.uploaded_by.id}}/{{quote.id}}">Delete</a>
+            <hr>
+            {% endfor %}
+        </div>
+    </main>
+</body>
+</html>
